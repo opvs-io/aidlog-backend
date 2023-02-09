@@ -23,6 +23,7 @@
       "@aidlog/*": ["src/*"],
       "@aidlog/transformers/*": ["src/shared/transformers/*"],
       "@aidlog/records/*": ["src/modules/records/*"],
+      "@aidlog/requests/*": ["src/modules/requests/*"],
       "@aidlog/users/*": ["src/modules/users/*"]
     }
   },

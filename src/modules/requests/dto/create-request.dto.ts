@@ -9,7 +9,7 @@ import {
 
 import { Trim } from '@aidlog/shared/transformers/string.transformer';
 
-export class CreateRecordDto {
+export class CreateRequestDto {
   @Trim()
   @IsLatLong()
   destination: string;
@@ -27,5 +27,5 @@ export class CreateRecordDto {
   @Length(0, 300)
   description?: string;
 
-  creatorUid: string;
+  requesterUid: string;
 }

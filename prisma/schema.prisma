@@ -8,47 +8,81 @@ datasource db {
 }
 
 model User {
-  uid            String        @id
-  firstName      String
-  lastName       String
-  organization   Organization? @relation(fields: [organizationId], references: [id])
-  organizationId Int?
-  records        Record[]
+  uid String @id
+
+  firstName String
+  lastName  String
+
+  records  Record[]
+  requests Request[]
+
+  memberOrganization   Organization? @relation("member", fields: [memberOrganizationId], references: [id])
+  memberOrganizationId Int?
+
+  ownerOrganization   Organization? @relation("owner")
+  ownerOrganizationId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("users")
 }
 
-model OrganizationOwner {
-  id           Int           @id @default(autoincrement())
-  name         String
-  surname      String
-  organization Organization?
-
-  @@map("organization_owners")
-}
-
 model Organization {
-  id      Int               @id @default(autoincrement())
-  name    String
-  users   User[]
-  owner   OrganizationOwner @relation(fields: [ownerId], references: [id])
-  ownerId Int               @unique
-  records Record[]
+  id Int @id @default(autoincrement())
+
+  name String
+
+  members User[] @relation("member")
+
+  owner    User   @relation("owner", fields: [ownerUid], references: [uid])
+  ownerUid String @unique
+
+  records  Record[]
+  requests Request[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("organizations")
 }
 
 model Record {
-  id             Int          @id @default(autoincrement())
-  destination    String
+  id Int @id @default(autoincrement())
+
+  productCode String
+  amount      Int
+  description String?
+  destination String
+
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId Int
-  creator        User         @relation(fields: [creatorId], references: [uid])
-  creatorId      String
-  amount         Int
-  productCode    String
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+
+  creator    User   @relation(fields: [creatorUid], references: [uid])
+  creatorUid String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("records")
+}
+
+model Request {
+  id Int @id @default(autoincrement())
+
+  productCode String
+  amount      Int
+  description String?
+  destination String
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+
+  requester    User   @relation(fields: [requesterUid], references: [uid])
+  requesterUid String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("requests")
 }

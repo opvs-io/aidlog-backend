@@ -12,8 +12,6 @@ import supabaseConfig from '@aidlog/shared/configs/supabase.config';
 
 import { SupabaseAuthPayload } from '@aidlog/shared/interfaces/supabase-auth-payload.interface';
 
-import { UserNotFoundException } from '@aidlog/users/exceptions/users.exception';
-
 import { UsersService } from '@aidlog/users/users.service';
 
 @Injectable()
@@ -32,7 +30,7 @@ export class UserAuthGuard implements CanActivate {
       const user = await this.usersService.findOneByUid(payload.sub);
 
       if (!user) {
-        throw new UserNotFoundException();
+        return false;
       }
 
       request.user = user;

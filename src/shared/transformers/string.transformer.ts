@@ -12,3 +12,9 @@ export function Trim(): PropertyDecorator {
     transformWrapper(value, (value) => value.trim()),
   );
 }
+
+export function ToNumber(): PropertyDecorator {
+  return Transform(({ value }: { value: string }) =>
+    transformWrapper(value, (value) => +value),
+  );
+}

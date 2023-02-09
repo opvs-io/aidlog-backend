@@ -14,9 +14,9 @@ export class RecordsService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async findAllByCreator(creatorId: string): Promise<Record[]> {
+  async findAllByCreator(creatorUid: string): Promise<Record[]> {
     return this.prisma.record.findMany({
-      where: { creatorId },
+      where: { creatorUid },
     });
   }
 
@@ -27,18 +27,16 @@ export class RecordsService {
   }
 
   async create(dto: CreateRecordDto): Promise<Record> {
-    const creator = await this.usersService.findOneByUid(dto.creatorId);
-
-    if (!creator.organizationId) {
-    }
+    const creator = await this.usersService.findOneByUid(dto.creatorUid);
 
     const record = await this.prisma.record.create({
       data: {
         destination: dto.destination,
         amount: dto.amount,
         productCode: dto.productCode,
-        creatorId: dto.creatorId,
-        organizationId: creator.organizationId,
+        creatorUid: dto.creatorUid,
+        description: dto.description,
+        organizationId: creator.memberOrganizationId,
       },
     });
 
