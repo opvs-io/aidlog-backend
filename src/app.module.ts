@@ -1,10 +1,23 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { CacheModule, Module } from '@nestjs/common';
+
+import { RecordsModule } from '@aidlog/records/records.module';
+import { UsersModule } from '@aidlog/users/users.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    CacheModule.register({
+      ttl: 60000, // in ms, 1 min
+      isGlobal: true,
+    }),
+    ThrottlerModule.forRoot({
+      ttl: 60, // in secs
+      limit: 100,
+    }),
+    RecordsModule,
+    UsersModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

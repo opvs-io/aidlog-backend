@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  uid            String        @id
+  firstName      String
+  lastName       String
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId Int?
+  records        Record[]
+
+  @@map("users")
+}
+
+model OrganizationOwner {
+  id           Int           @id @default(autoincrement())
+  name         String
+  surname      String
+  organization Organization?
+
+  @@map("organization_owners")
+}
+
+model Organization {
+  id      Int               @id @default(autoincrement())
+  name    String
+  users   User[]
+  owner   OrganizationOwner @relation(fields: [ownerId], references: [id])
+  ownerId Int               @unique
+  records Record[]
+
+  @@map("organizations")
+}
+
+model Record {
+  id             Int          @id @default(autoincrement())
+  destination    String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+  creator        User         @relation(fields: [creatorId], references: [uid])
+  creatorId      String
+  amount         Int
+  productCode    String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("records")
+}
